@@ -1,5 +1,7 @@
 import telebot
 from telebot import types
+import daemon
+import time
 
 bot = telebot.TeleBot('6957477344:AAHpeVkBCRPWPn1Z46Us6E2FCU8FhA8Iv00')
 
@@ -52,4 +54,15 @@ def handle_answer(message):
     ask_question(chat_id)
 
 if __name__ == "__main__":
-    bot.polling(none_stop=True, interval=0)
+    # Функция, которая будет выполняться в качестве демона
+    def run_bot():
+        while True:
+            try:
+                bot.polling(none_stop=True, interval=0)
+            except Exception as e:
+                print(f"Error: {e}")
+                time.sleep(5)
+
+    # Создание объекта DaemonContext
+    with daemon.DaemonContext():
+        run_bot()
